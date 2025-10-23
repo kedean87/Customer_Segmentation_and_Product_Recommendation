@@ -3,6 +3,9 @@ from clustering import *
 from reorganize import *
 from embed_data import *
 from product_query import *
+import joblib
+from scipy import sparse
+import pickle
 
 import warnings
 warnings.filterwarnings('ignore')
@@ -30,6 +33,15 @@ def main():
 	ed.setup_data()
 	ed.train()
 	ed.get_embeddings()
+	
+	joblib.dump(ed.vectorizer, "tfidf_vectorizer.pkl")
+	
+	with open('product_names.pkl', 'wb') as f:
+		pickle.dump(ed.product_names, f)
+	
+	sparse.save_npz('product_name_embeddings.npz', ed.product_name_embeddings)
+	
+	ed.similarity_df.to_csv('similarity.csv', index=True)
 	
 	pq = ProductQuery(
 		vectorizer=ed.vectorizer, 
