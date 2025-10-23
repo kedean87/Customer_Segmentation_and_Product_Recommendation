@@ -18,7 +18,7 @@ The AWS deployment consists of:
 ## 2. Deployment Steps
 
 ### **Important Note**
-- you must run `python src/main.py` in order to generate the files needed to make the prediction in the docker container environment ( cannot train models and generate data on ECS/Fargate, it must be loaded or it will exceed memory limits and fail during deployment )
+- you must run `cd src` and then `python main.py` in order to generate the files needed to make the prediction in the docker container environment ( cannot train models and generate data on ECS/Fargate, it must be loaded or it will exceed memory limits and fail during deployment )
 
 ### Step 1: Build and Push Docker Image to ECR
 ```bash
