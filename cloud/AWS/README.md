@@ -78,6 +78,8 @@ curl -X POST http://<public-ip>:8080/predict \
 - Returns JSON with recommended products.
 - Ensure container is running and public IP is accessible.
 
+![Ecommerce Recommendation Fargate](images/EcommerceRecommendationFargate.png)
+
 ---
 
 ## 3. Common Issues And Solutions
