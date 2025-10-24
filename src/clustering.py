@@ -28,10 +28,7 @@ class Clustering:
 		self.results = []
 		for name, algo in self.algorithms.items():
 			try:
-				if name == "GMM":
-					labels = algo.fit_predict(self.rfm_scaled)
-				else:
-					labels = algo.fit_predict(self.rfm_scaled)
+				labels = algo.fit_predict(self.rfm_scaled)
 				if len(set(labels)) > 1:
 					score = silhouette_score(self.rfm_scaled, labels)
 				else:
