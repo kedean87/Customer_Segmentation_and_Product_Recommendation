@@ -11,48 +11,55 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def main():
-	d = Dataset()
-	d.group_data()
-	d.scale_data()
+    d = Dataset()
+    d.group_data()
+    d.scale_data()
+    
+    c = Clustering(
+        rfm=d.rfm, 
+        rfm_scaled=d.rfm_scaled
+        )
+    c.cluster_results()
+    c.determine_best_algorithm()
+    
+    r = Reorganize(
+        data=d.data
+        )
+    
+    ed = EmbedData(
+        pivot=r.pivot
+        )
+    ed.create_model()
+    ed.setup_data()
+    ed.train()
+    ed.get_embeddings()
+    
+    joblib.dump(ed.vectorizer, "tfidf_vectorizer.pkl")
+    
+    with open('product_names.pkl', 'wb') as f:
+        pickle.dump(ed.product_names, f)
+    
+    sparse.save_npz('product_name_embeddings.npz', ed.product_name_embeddings)
+    
+    ed.similarity_df.to_csv('similarity.csv', index=True)
+    
+    pq = ProductQuery(
+        pivot=r.pivot,
+        rfm=c.rfm,
+        vectorizer=ed.vectorizer, 
+        product_names=ed.product_names,
+        product_name_embeddings=ed.product_name_embeddings,
+        similarity_df=ed.similarity_df
+        )
+
+	# without customer segmentation refinement
+	# results = pq.recommend("PINK CANDLES")
+
+	# with customer segmentation refinement based upon our clustering method
+    results = pq.recommend("PINK CANDLES", customer_id=18280.0)
 	
-	c = Clustering(
-		rfm=d.rfm, 
-		rfm_scaled=d.rfm_scaled
-		)
-	c.cluster_results()
-	c.determine_best_algorithm()
-	
-	r = Reorganize(
-		data=d.data
-		)
-	
-	ed = EmbedData(
-		pivot=r.pivot
-		)
-	ed.create_model()
-	ed.setup_data()
-	ed.train()
-	ed.get_embeddings()
-	
-	joblib.dump(ed.vectorizer, "tfidf_vectorizer.pkl")
-	
-	with open('product_names.pkl', 'wb') as f:
-		pickle.dump(ed.product_names, f)
-	
-	sparse.save_npz('product_name_embeddings.npz', ed.product_name_embeddings)
-	
-	ed.similarity_df.to_csv('similarity.csv', index=True)
-	
-	pq = ProductQuery(
-		vectorizer=ed.vectorizer, 
-		product_names=ed.product_names,
-		product_name_embeddings=ed.product_name_embeddings,
-		similarity_df=ed.similarity_df
-		)
-	
-	results = pq.recommend("PINK CANDLES")
-	for item, values in results.items():
-		print(item, values)
+    for item, values in results.items():
+        print(item, values)
 
 if __name__ == "__main__":
-	main()
+    main()
