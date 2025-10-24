@@ -44,7 +44,7 @@ class Clustering:
 	def determine_best_algorithm(self):
 		valid_results = [(n, c, s) for n, c, s in self.results if not np.isnan(s)]
 		best_algo_name, _, best_score = max(valid_results, key=lambda x: x[2])
-		print(f"\n🏆 Best clustering algorithm: {best_algo_name} (Silhouette={best_score:.3f})")
+		print(f"\nBest clustering algorithm: {best_algo_name} (Silhouette={best_score:.3f})")
 
 		self.best_algo = self.algorithms[best_algo_name]
 		self.rfm['Segment'] = self.best_algo.fit_predict(self.rfm_scaled)
